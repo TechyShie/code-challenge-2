@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Manager</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Event Guest List Manager</h1>
+
+  <!-- ✅ Guest Form -->
+  <form id="guestForm">
+    <label for="guestName">Enter Guest Name:</label>
+    <input type="text" id="guestName" name="guestName" pattern="[A-Za-z\s]+" title="Name must contain letters only" required />
+
+    <label for="category">Category:</label>
+    <select id="category" name="category" required>
+      <option value="" disabled selected>Choose Category</option>
+      <option value="Family">Family</option>
+      <option value="Friends">Friends</option>
+      <option value="Colleagues">Colleagues</option>
+    </select>
+
+    <button type="submit">Add Guest</button>
+  </form>
+
+  <!-- ✅ Guest Table -->
+  <section>
+    <h2>Guest List</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Date & Time</th>
+          <th>Attending?</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="guestTableBody">
+        <!-- Guests will be inserted here -->
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ✅ Script at the bottom -->
+  <script>
+    const form = document.getElementById("guestForm");
+    const tableBody = document.getElementById("guestTableBody");
+    let guestCount = 0; // ✅ Track how many guests have been added
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // ✅ Check guest limit
+      if (guestCount >= 10) {
+        alert("Guest limit reached (10 guests max).");
+        return;
+      }
+
+      const nameInput = document.getElementById("guestName");
+      const categorySelect = document.getElementById("category");
+
+      const name = nameInput.value.trim();
+      const category = categorySelect.value;
+      const onlyLetters = /^[A-Za-z\s]+$/;
+
+      if (!onlyLetters.test(name)) {
+        alert("Please enter letters only. No numbers or symbols.");
+        return;
+      }
+
+      const row = document.createElement("tr");
+      const dateTime = new Date().toLocaleString();
+
+      row.innerHTML = `
+        <td>${name}</td>
+        <td>${category}</td>
+        <td>${dateTime}</td>
+        <td>
+          <select>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </td>
+        <td><button onclick="editRow(this)">Edit</button></td>
+        <td><button onclick="deleteRow(this)">Delete</button></td>
+      `;
+
+      tableBody.appendChild(row);
+      guestCount++; // ✅ Increase count after adding guest
+      form.reset();
+    });
+
+    function deleteRow(button) {
+      const row = button.parentElement.parentElement;
+      row.remove();
+      guestCount--; // ✅ Decrease count when deleting guest
+    }
+
+    function editRow(button) {
+      const row = button.parentElement.parentElement;
+      const nameCell = row.children[0];
+      const categoryCell = row.children[1];
+
+      const newName = prompt("Edit guest name:", nameCell.textContent);
+      if (newName && /^[A-Za-z\s]+$/.test(newName.trim())) {
+        nameCell.textContent = newName.trim();
+      }
+
+      const newCategory = prompt("Edit category (Family, Friends, Colleagues):", categoryCell.textContent);
+      if (newCategory) {
+        categoryCell.textContent = newCategory.trim();
+      }
+    }
+  </script>
+
+</body>
+</html>
