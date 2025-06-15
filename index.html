@@ -8,13 +8,16 @@
 </head>
 <body>
 
-  <h1>🎉 Event Guest List Manager</h1>
+  <h1>🎉 Event Guest List Manager</h1><!--Main heading-->
 
-  <!-- ✅ Guest Form -->
+  <!-- ✅ Guest Form, adds new guests onto the list -->
   <form id="guestForm">
+
+    <!--text input for guest name-->
     <label for="guestName">Enter Guest Name:</label>
     <input type="text" id="guestName" name="guestName" pattern="[A-Za-z\s]+" title="Name must contain letters only" required />
 
+    <!--dropdown menu for choosing which category the guest falls in.-->
     <label for="category">Category:</label>
     <select id="category" name="category" required>
       <option value="" disabled selected>Choose Category</option>
@@ -23,17 +26,20 @@
       <option value="Colleagues">Colleagues</option>
     </select>
 
+    <!--Submits the form and adds name to list-->
     <button type="submit">Add Guest ➕</button>
   </form>
 
-  <!-- ✅ Search and Count -->
+  <!-- Allows you to search for specific guest as it filters as you type-->
   <input type="text" id="searchInput" placeholder="🔍 Search guest names..." oninput="filterGuests()">
   <p id="guestCount">Total Guests: 0</p>
 
-  <!--        Guest Table -->
+  <!--Guest table...where the names of the guests are displayed-->
   <section>
     <h2>👥 Guest List</h2>
     <table border="1">
+
+      <!--Defines the headings for each column on the table e.g. guest name -->
       <thead>
         <tr>
           <th>#</th>
@@ -45,6 +51,8 @@
           <th>Delete 🗑️</th>
         </tr>
       </thead>
+
+      <!--This is where new rows of the guest's name and specifications are added.-->
       <tbody id="guestTableBody">
         <tr id="emptyMessage">
           <td colspan="7" style="text-align:center;">No guests added yet 😢</td>
@@ -53,6 +61,7 @@
     </table>
   </section>
 
+  <!--Responsible for pop up massege that confirms guest is added to list-->
   <div id="toast"></div>
 
   <!-- Link to external JS -->

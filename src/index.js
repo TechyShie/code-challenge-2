@@ -1,136 +1,79 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("guestForm");
-  const tableBody = document.getElementById("guestTableBody");
-  const emptyMessage = document.getElementById("emptyMessage");
-  const guestCount = document.getElementById("guestCount");
-  const toast = document.getElementById("toast");
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id),
+    form = $("guestForm"),
+    tbody = $("guestTableBody"),
+    toast = $("toast"),
+    countDisplay = $("guestCount");
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const nameInput = document.getElementById("guestName");
-    const categorySelect = document.getElementById("category");
-
-    let name = nameInput.value.trim();
-    const category = categorySelect.value;
-    const onlyLetters = /^[A-Za-z\s]+$/;
-
-    if (!onlyLetters.test(name)) {
-      alert("Please enter letters only. No numbers or symbols.");
-      return;
-    }
-
-    name = name
+  const formatName = (name) =>
+    name
+      .trim()
       .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase())
       .join(" ");
 
-    if (emptyMessage) {
-      emptyMessage.remove();
+  const updateCount = () => {
+    const rows = [...tbody.querySelectorAll("tr")].filter((r) => r.id !== "emptyMessage");
+    rows.forEach((r, i) => (r.children[0].textContent = i + 1));
+    countDisplay.textContent = `Total Guests: ${rows.length}`;
+    if (rows.length === 0 && !$("emptyMessage")) {
+      const msg = document.createElement("tr");
+      msg.id = "emptyMessage";
+      msg.innerHTML = `<td colspan="7" style="text-align:center;">No guests added yet 😢</td>`;
+      tbody.appendChild(msg);
     }
-
-    const row = document.createElement("tr");
-    const dateTime = new Date().toLocaleString();
-
-    row.innerHTML = `
-      <td></td>
-      <td>${name}</td>
-      <td>${category}</td>
-      <td>${dateTime}</td>
-      <td>
-        <select>
-          <option value="Yes">✅ Yes</option>
-          <option value="No">❌ No</option>
-        </select>
-      </td>
-      <td><button onclick="editRow(this)">✏️ Edit</button></td>
-      <td><button onclick="deleteRow(this)">🗑️ Delete</button></td>
-    `;
-
-    tableBody.appendChild(row);
-    updateGuestNumbers();
-    form.reset();
-    showToast(`Guest '${name}' added!`);
-  });
-
-  function deleteRow(button) {
-    const row = button.parentElement.parentElement;
-    row.remove();
-    updateGuestNumbers();
-
-    if (tableBody.rows.length === 0) {
-      const msgRow = document.createElement("tr");
-      msgRow.id = "emptyMessage";
-      msgRow.innerHTML = `<td colspan="7" style="text-align:center;">No guests added yet 😢</td>`;
-      tableBody.appendChild(msgRow);
-    }
-  }
-
-  window.deleteRow = deleteRow;
-
-  function editRow(button) {
-    const row = button.parentElement.parentElement;
-    const nameCell = row.children[1];
-    const categoryCell = row.children[2];
-
-    let newName = prompt("Edit guest name:", nameCell.textContent);
-    if (newName && /^[A-Za-z\s]+$/.test(newName.trim())) {
-      newName = newName
-        .trim()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(" ");
-      nameCell.textContent = newName;
-    }
-
-    const newCategory = prompt(
-      "Edit category (Family, Friends, Colleagues):",
-      categoryCell.textContent
-    );
-    if (newCategory) {
-      categoryCell.textContent = newCategory.trim();
-    }
-  }
-
-  window.editRow = editRow;
-
-  function updateGuestNumbers() {
-    const rows = tableBody.querySelectorAll("tr");
-    let count = 0;
-    rows.forEach((row) => {
-      const numberCell = row.children[0];
-      if (numberCell && row.id !== "emptyMessage") {
-        numberCell.textContent = ++count;
-      }
-    });
-    guestCount.textContent = `Total Guests: ${count}`;
-  }
-
-  function showToast(message) {
-    toast.textContent = message;
-    toast.className = "show";
-    setTimeout(() => {
-      toast.className = toast.className.replace("show", "");
-    }, 3000);
-  }
-
-  window.filterGuests = function () {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    const rows = tableBody.getElementsByTagName("tr");
-    let visibleCount = 0;
-
-    Array.from(rows).forEach((row) => {
-      if (row.id === "emptyMessage") return;
-
-      const name = row.children[1].textContent.toLowerCase();
-      if (name.includes(query)) {
-        row.style.display = "";
-        visibleCount++;
-      } else {
-        row.style.display = "none";
-      }
-    });
-
-    guestCount.textContent = `Total Guests: ${visibleCount}`;
   };
+
+  const showToast = (msg) => {
+    toast.textContent = msg;
+    toast.className = "show";
+    setTimeout(() => (toast.className = ""), 3000);
+  };
+
+  window.editRow = (btn) => {
+    const row = btn.closest("tr"),
+      nameCell = row.children[1],
+      catCell = row.children[2];
+    let newName = prompt("Edit guest name:", nameCell.textContent);
+    if (newName && /^[A-Za-z\s]+$/.test(newName)) nameCell.textContent = formatName(newName);
+    let newCat = prompt("Edit category (Family, Friends, Colleagues):", catCell.textContent);
+    if (newCat) catCell.textContent = newCat.trim();
+  };
+
+  window.deleteRow = (btn) => {
+    btn.closest("tr").remove();
+    updateCount();
+  };
+
+  window.filterGuests = () => {
+    const q = $("searchInput").value.toLowerCase();
+    const rows = tbody.querySelectorAll("tr");
+    let visible = 0;
+    rows.forEach((row) => {
+      if (row.id === "emptyMessage") return;
+      const match = row.children[1].textContent.toLowerCase().includes(q);
+      row.style.display = match ? "" : "none";
+      if (match) visible++;
+    });
+    countDisplay.textContent = `Total Guests: ${visible}`;
+  };
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nameVal = $("guestName").value.trim(),
+      category = $("category").value;
+    if (!/^[A-Za-z\s]+$/.test(nameVal)) return alert("Letters only please.");
+    const name = formatName(nameVal),
+      row = document.createElement("tr");
+    $("emptyMessage")?.remove();
+    row.innerHTML = `
+      <td></td><td>${name}</td><td>${category}</td><td>${new Date().toLocaleString()}</td>
+      <td><select><option>✅ Yes</option><option>❌ No</option></select></td>
+      <td><button onclick="editRow(this)">✏️ Edit</button></td>
+      <td><button onclick="deleteRow(this)">🗑️ Delete</button></td>`;
+    tbody.appendChild(row);
+    updateCount();
+    showToast(`Guest '${name}' added!`);
+    form.reset();
+  });
 });
