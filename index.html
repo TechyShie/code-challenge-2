@@ -33,6 +33,8 @@
   <!-- Allows you to search for specific guest as it filters as you type-->
   <input type="text" id="searchInput" placeholder="🔍 Search guest names..." oninput="filterGuests()">
   <p id="guestCount">Total Guests: 0</p>
+  <button id="undoBtn" onclick="undoDelete()" style="display: none;">↩️ Undo Delete</button>
+
 
   <!--Guest table...where the names of the guests are displayed-->
   <section>

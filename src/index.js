@@ -65,6 +65,13 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const nameVal = $("guestName").value.trim(),
       category = $("category").value;
+
+        const rows = [...tbody.querySelectorAll("tr")].filter(r => r.id !== "emptyMessage");
+  if (rows.length >= 10) {
+    alert("You can only add up to 10 guests.");
+    return;
+  }
+
     if (!/^[A-Za-z\s]+$/.test(nameVal)) return alert("Letters only please.");
 
     const name = formatName(nameVal),//FOrmart name and creates new table row then removes empty message if present.
