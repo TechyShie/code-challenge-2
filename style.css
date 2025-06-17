@@ -1,6 +1,6 @@
 /* === Sunset Theme CSS === */
 
-/* Base colors from the palette */
+/* Define the custom color palette as CSS variables for easy reuse */
 :root {
   --deep-brown: #493129;
   --plum: #8b597b;
@@ -10,6 +10,7 @@
 }
 
 /* === General Body Styling === */
+/* Set font, base background color, text color, and page padding */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--light-peach);
@@ -18,27 +19,31 @@ body {
   padding: 2rem;
 }
 
+/* Style main headings with themed color and center alignment */
 h1, h2 {
   color: var(--plum);
   text-align: center;
 }
 
 /* === Form Styling === */
+/* Style the form container: background, padding, rounded corners, and shadow */
 form {
   background-color: var(--soft-blush);
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   max-width: 500px;
-  margin: 0 auto 2rem auto;
+  margin: 0 auto 2rem auto; /* Center form with margin */
 }
 
+/* Style form labels to be bold and spaced */
 form label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
 
+/* Style input fields and dropdowns: spacing, border, and background */
 form input[type="text"],
 form select {
   width: 100%;
@@ -49,6 +54,7 @@ form select {
   background-color: #fff;
 }
 
+/* Style submit button with primary color, hover effect, and rounded corners */
 form button[type="submit"] {
   background-color: var(--plum);
   color: white;
@@ -64,6 +70,7 @@ form button[type="submit"]:hover {
 }
 
 /* === Table Styling === */
+/* Style the main table: full width, shadow, and spacing */
 section table {
   width: 100%;
   border-collapse: collapse;
@@ -72,17 +79,20 @@ section table {
   margin-top: 1rem;
 }
 
+/* Style table cells and headers: padding and border */
 section th, section td {
   padding: 0.75rem;
   border: 1px solid var(--dusty-pink);
   text-align: center;
 }
 
+/* Style the header row of the table with background and text color */
 section th {
   background-color: var(--dusty-pink);
   color: var(--deep-brown);
 }
 
+/* Style select dropdowns and buttons inside the table cells */
 section td select,
 section td button {
   padding: 0.3rem 0.5rem;
@@ -90,6 +100,7 @@ section td button {
   border: none;
 }
 
+/* Style buttons in table rows: background, color, and hover effect */
 section td button {
   background-color: var(--dusty-pink);
   color: var(--deep-brown);
